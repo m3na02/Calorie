@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Calorie</string>
+    <string name="title">Calories</string>
+
 </resources>
