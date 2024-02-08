@@ -16,6 +16,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -61,6 +62,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+// Composable function for displaying a heading
 @Composable
 fun Heading(title: String){
     Text(
@@ -74,6 +76,8 @@ fun Heading(title: String){
     )
 
 }
+
+// Composable function for weight input field
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WeightField(weightInput: String, onValueChange:(String) -> Unit) {
@@ -88,6 +92,8 @@ fun WeightField(weightInput: String, onValueChange:(String) -> Unit) {
             .padding(top = 16.dp, bottom = 16.dp)
     )
 }
+
+// Composable function for selecting gender
 @Composable
 fun GenderChoices(male: Boolean, setGenderMale:(Boolean)-> Unit) {
 
@@ -109,6 +115,7 @@ fun GenderChoices(male: Boolean, setGenderMale:(Boolean)-> Unit) {
     }
 }
 
+// Composable function for selecting intentsity from the dropdown menu
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun IntensityList(onClick:(Float) -> Unit){
@@ -164,9 +171,31 @@ fun IntensityList(onClick:(Float) -> Unit){
         }
     }
 }
+
+// Composable function for displaying the result and calculation button
+@Composable
+fun Calculation(male:Boolean, weight: Int, intensity: Float, setResult:(Int) -> Unit){
+    Button(
+        onClick = { 
+            if (male){
+                setResult(((879 + 10.2 * weight)* intensity).toInt())
+            }else{
+                setResult(((795 + 7.18 * weight)* intensity).toInt())
+            }
+            
+        },
+        modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(text = "CALCULATE")
+        
+    }
+}
+
+// Composbale function for the main screen layout
 @Composable
 fun CalorieScreen(){
     var weightInput by remember { mutableStateOf("") }
+    var weight = weightInput.toIntOrNull() ?:0
     var male by remember { mutableStateOf(true) }
     var intensity by remember { mutableStateOf(1.3f) }
     var result by remember { mutableStateOf(0) }
@@ -174,20 +203,26 @@ fun CalorieScreen(){
         modifier = Modifier.padding(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ){
+        // Displaying heading
         Heading(title = stringResource(R.string.title))
+        // Weight input field
         WeightField(weightInput = weightInput, onValueChange = { weightInput = it })
+        // Gender selection
         GenderChoices(male, setGenderMale = { male = it })
+        // Intensity selection
         IntensityList(onClick = {intensity = it})
+        // Displaying the result
         Text(
             text = result.toString(),
             color = MaterialTheme.colorScheme.secondary,
             fontWeight = FontWeight.Bold
         )
+        // Calculation Button
+        Calculation(male = male, weight = weight, intensity = intensity, setResult ={result = it} )
 
     }
 
 }
-
 
 @Preview(showBackground = true)
 @Composable
